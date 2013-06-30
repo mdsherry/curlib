@@ -33,9 +33,9 @@ class AnimatedCursorFile:
 			
 		return total
 	
-	def PrintFile(self,f):
+	def PrintFile(self, f):
 		f.write("RIFF")
-		f.write(struct.pack('<I',self.GetSize())
+		f.write(struct.pack('<I', self.GetSize())
 		f.write("ACON")
 		f.write("LIST")
 		# Name must be null terminated
@@ -56,13 +56,13 @@ class AnimatedCursorFile:
 		tot_length = n_length + (n_length & 1) + a_length + (a_length & 1) + 20
 		f.write(struct.pack('<I4s4sI%ss4sI%ss' % (n_length, a_length), 
 			tot_length, 'INFO', 'INAM', n_length, name, 'IART', a_length, author))
-		f.write(struct.pack('<4sIII','anih',36,36,len(self.icons)))
+		f.write(struct.pack('<4sIII', 'anih', 36, 36, len(self.icons)))
 		if self.rate:
-			f.write(struct.pack('<I',len(self.rate))
+			f.write(struct.pack('<I', len(self.rate))
 		else:
-			f.write(struct.pack('<I',len(self.icons))
+			f.write(struct.pack('<I', len(self.icons))
 			
-		f.write(struct.pack('<IIIIII', 0,0,0,1,self.JifRate,1)
+		f.write(struct.pack('<IIIIII', 0, 0, 0, 1, self.JifRate, 1)
 
 		# Rate and sequence, if available
 		if self.rate:
@@ -103,9 +103,9 @@ class CursorFile:
 		return total
 		
 	def PrintHeader(self, f):
-		IntToFile(f,self.cdReserved)
-		IntToFile(f,self.cdType)
-		IntToFile(f,len(self.cdEntries))
+		IntToFile(f, self.cdReserved)
+		IntToFile(f, self.cdType)
+		IntToFile(f, len(self.cdEntries))
 		for cd in enumerate(self.cdEntries):
 			# Offset is 6 (basic header) plus 16 for each CD entry
 			# Since we're indexing from zero here, we add the first 16
@@ -125,14 +125,14 @@ class CursorFile:
 			self.Image = Image
 
 		def PrintHeader(self, f, ImageOffset):
-			IntToFile(f, self.bWidth,1)
-			IntToFile(f, self.bHeight,1)
-			IntToFile(f, self.bColorCount,1)
-			IntToFile(f, self.bReserved,1)
+			IntToFile(f, self.bWidth, 1)
+			IntToFile(f, self.bHeight, 1)
+			IntToFile(f, self.bColorCount, 1)
+			IntToFile(f, self.bReserved, 1)
 			IntToFile(f, self.wXHotspot)
 			IntToFile(f, self.wYHotspot)
-			IntToFile(f, self.Image.NumBytes(),4)
-			IntToFile(f, ImageOffset,4)
+			IntToFile(f, self.Image.NumBytes(), 4)
+			IntToFile(f, ImageOffset, 4)
 		
 	class CursorImage:
 		def __init__(self, width, height, bitrate=32):
@@ -142,7 +142,7 @@ class CursorFile:
 			self.biPlanes = 1
 			self.biBitCount = bitrate
 			self.biCompression = 0
-			self.biSizeImage = (width*height*(bitrate+1))/8
+			self.biSizeImage = (width * height * (bitrate + 1)) / 8
 			self.biXPelsPerMeter = 0
 			self.biYPelsPerMeter = 0
 			self.biClrUsed = 0
@@ -156,7 +156,7 @@ class CursorFile:
 		def PrintImage(self, f):
 			IntToFile(f, self.biSize, 4)
 			IntToFile(f, self.biWidth, 4)
-			IntToFile(f, self.biHeight*2, 4) # No idea why we multiply this by two, but we do.
+			IntToFile(f, self.biHeight * 2, 4) # No idea why we multiply this by two, but we do.
 			IntToFile(f, self.biPlanes)
 			IntToFile(f, self.biBitCount)
 			IntToFile(f, self.biCompression, 4)
@@ -165,18 +165,18 @@ class CursorFile:
 			IntToFile(f, self.biYPelsPerMeter, 4)
 			IntToFile(f, self.biClrUsed, 4)
 			IntToFile(f, self.biClrImportant, 4)
-			for i in range(self.biHeight*self.biWidth):
+			for i in range(self.biHeight * self.biWidth):
 				if self.Image[i][3] < 128 and self.biBitCount < 32:
-					IntToFile(f,0,1)
-					IntToFile(f,0,1)
-					IntToFile(f,0,1)
+					IntToFile(f, 0, 1)
+					IntToFile(f, 0, 1)
+					IntToFile(f, 0, 1)
 				else:
-					IntToFile(f,self.Image[i][2],1)
-					IntToFile(f,self.Image[i][1],1)
-					IntToFile(f,self.Image[i][0],1)
+					IntToFile(f, self.Image[i][2], 1)
+					IntToFile(f, self.Image[i][1], 1)
+					IntToFile(f, self.Image[i][0], 1)
 					if self.biBitCount == 32:
-						IntToFile(f,self.Image[i][3],1)
+						IntToFile(f, self.Image[i][3], 1)
 			
 			for i in range(self.biHeight * self.biWidth / 8):
-				IntToFile(f,self.Mask[i],1)
+				IntToFile(f, self.Mask[i], 1)
 
