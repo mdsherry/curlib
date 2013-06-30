@@ -2,16 +2,16 @@
 import Image
 import sys
 import curlib
-import json
+import yaml
 
 if __name__ == '__main__':
 	import argparse
 	parser = argparse.ArgumentParser(description="Create an animated cursor")
-	parser.add_argument( "config-file", dest="configfile", type=argparse.FileType("rt") )
+	parser.add_argument( "configfile", type=argparse.FileType("rt") )
 	parser.add_argument("destination", type=argparse.FileType("wb"))
 
-	args = parser.parse()
-	config = json.load( args.configfile )
+	args = parser.parse_args()
+	config = yaml.load( args.configfile )
 	hotspot = config['hotspot']
 	author = config['author']
 	name = config['name']
@@ -34,5 +34,5 @@ if __name__ == '__main__':
 		cursors.append(cursor)
 
 	
-	a = curlib.AnimatedCursorFile(author, name, cl, JifRate = defaultjif)
+	a = curlib.AnimatedCursorFile(author, name, cursors, JifRate = defaultjif)
 	a.PrintFile(args.destination)

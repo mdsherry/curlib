@@ -1,7 +1,7 @@
 import struct
 def IntToString(num, size=2):
 	""" Takes a word or byte and returns its binary representation as a string """
-	return  struct.pack('<%sB' % size, num)
+	return  struct.pack('<{}'.format( {1:"B", 2:"H", 4:"I"}[size] ), num)
 
 def IntToFile(f, num, size=2):
 	""" Takes a word or byte and prints its binary representation to a file """
@@ -35,7 +35,7 @@ class AnimatedCursorFile:
 	
 	def PrintFile(self, f):
 		f.write("RIFF")
-		f.write(struct.pack('<I', self.GetSize())
+		f.write(struct.pack('<I', self.GetSize()))
 		f.write("ACON")
 		f.write("LIST")
 		# Name must be null terminated
@@ -58,11 +58,11 @@ class AnimatedCursorFile:
 			tot_length, 'INFO', 'INAM', n_length, name, 'IART', a_length, author))
 		f.write(struct.pack('<4sIII', 'anih', 36, 36, len(self.icons)))
 		if self.rate:
-			f.write(struct.pack('<I', len(self.rate))
+			f.write(struct.pack('<I', len(self.rate)))
 		else:
-			f.write(struct.pack('<I', len(self.icons))
+			f.write(struct.pack('<I', len(self.icons)))
 			
-		f.write(struct.pack('<IIIIII', 0, 0, 0, 1, self.JifRate, 1)
+		f.write(struct.pack('<IIIIII', 0, 0, 0, 1, self.JifRate, 1))
 
 		# Rate and sequence, if available
 		if self.rate:
